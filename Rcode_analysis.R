@@ -22,3 +22,14 @@ holtforecast <-holt(recent,h=5,damped=TRUE,inital="optimal")
 plot(holtforecast)
 lines(holtforecast$fitted,col="blue")
 aiccHolt <- holtforecast$model$aicc
+
+
+
+dygraph(combined,main="Wand Sales by Maker",xlab="Date",ylab="Sales") %>%
+  dySeries("Olliv.Sales", label="Ollivander", col="blue") %>%
+  dySeries("Grego.Sales", label="Gregorovitch",col="orange") %>%
+  dyOptions(fillGraph=TRUE)%>%
+  dyRangeSelector() %>%
+  dyShading(from="1995-01-01",to="1999-07-31") %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth =3))%>% 
+  dyLegend(width=500)

@@ -80,3 +80,45 @@ aiccHolt
 The preferred model it typically the one with the smaller AICc value, in this case, the SES model. 
 
 ## The Wands Choose the Wizard
+### a. Getting Data
+```{r data3}
+library(dygraphs)
+Olliv <- read.csv("Unit11TimeSeries_Ollivander.csv", header=FALSE)
+Grego <- read.csv("Unit11TimeSeries_Gregorovitch.csv", header=FALSE)
+```
+
+Read in data from two files about the wand sales over time by two wand makers.
+
+### b. Converting Data
+```{r convert3}
+Olliv$V1 <- as.Date(Olliv$V1,"%m/%d/%Y")
+Grego$V1 <- as.Date(Grego$V1,"%m/%d/%Y")
+```
+
+Converting the string/factor variable into an appropriate Date type.
+
+### c. Convert to Time Series Object
+```{r timseries3}
+library(xts)
+OllivTS <- xts(Olliv,order.by=Olliv$V1)
+GregoTS <- xts(Grego,order.by=Grego$V1)
+names(OllivTS) <- c("Date","Olliv Sales")
+names(GregoTS) <- c("Date","Grego Sales")
+```
+
+Creating XTS objects from data frame objects. Also cleaned up the variable names to be easier to identify.
+
+### d. Putting it all together
+```{r alltogether}
+combined <- merge(OllivTS[,2],GregoTS[,2])
+dygraph(combined,main="Wand Sales by Maker",xlab="Date",ylab="Sales") %>%
+  dySeries("Olliv.Sales", label="Ollivander", col="blue") %>%
+  dySeries("Grego.Sales", label="Gregorovitch",col="orange") %>%
+  dyOptions(fillGraph=TRUE)%>%
+  dyRangeSelector() %>%
+  dyShading(from="1995-01-01",to="1999-07-31") %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth =3))%>% 
+  dyLegend(width=500)
+```
+
+Creating a merged data set from which to build a dygraph. Creating a dygraph with a number of different features.
